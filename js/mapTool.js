@@ -152,14 +152,18 @@ function showEditor(_mapExists){
   let form = document.createElement('form');
   let nameInput = document.createElement('input');
   nameInput.name = 'name';
+  let sizeInput = document.createElement('input');
+  sizeInput.name = 'size';
   let editorSubmit = document.createElement('input');
   nameInput.type = 'text';
+  sizeInput.type = 'number';
   editorSubmit.type = 'submit';
 
   if (_mapExists){
     // A map exists and is loaded, fields for editing
     titleText = document.createTextNode('Edit Map');
     nameInput.value = map.name;
+    sizeInput.value = map.size;
     editorSubmit.value = 'Update Map';
     
   } else {
@@ -170,6 +174,7 @@ function showEditor(_mapExists){
   }
 
   form.append(nameInput);
+  form.append(sizeInput);
   form.append(editorSubmit);
 
   title.append(titleText);
@@ -177,17 +182,12 @@ function showEditor(_mapExists){
 
   editor.append(form);
 
-
-
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-
-    console.log(e.target);
-
     for(input of e.target.children) {
 
       if(input.name !== '') {
-        map[input.name] = input.value;
+        map[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
       }
     };
     
