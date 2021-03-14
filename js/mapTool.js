@@ -1,11 +1,7 @@
 /* 
-  Flöde
-   1. Användaren kommer till verktyget
-   2. Kolla om det finns sparad data i localStorage
-   3. Ladda data / skapa en ny tom Map
-   4. Ladda editor och låt användare fylla i uppgifter
-   4.5 Användaren klickar på en knapp
-   5. Generera efter användarens inställningar och visa output
+  Att göra
+   1. Uppdatera och spara map när användaren redigerar den
+   2. Sätt för användaren att lägga till egna attribut i map
 */
 
 // ** LAUNCH TOOL ** //
