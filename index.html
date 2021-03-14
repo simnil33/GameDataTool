@@ -1,0 +1,65 @@
+<html>
+
+<head>
+	<link rel=stylesheet type="text/css" href="css/style.css">
+	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="js/mapTool.js"></script>
+	<script type="text/javascript" src="js/itemTool.js"></script>
+	<script type="text/javascript" src="js/npcTool.js"></script>
+	<script type="text/javascript" src="js/questTool.js"></script>
+	<script type="text/javascript" src="js/export.js"></script>
+</head>
+
+<body>
+
+<div class="site-header">
+	<div class="site-width">
+		<p class="logo">RPG Tools</p>
+		<nav class="nav-primary">
+			<ul>
+				<li><a href="#" onclick="loadAbout()">About</a></li>
+				<li><a href="#" onclick="loadItemTool()">Items</a></li>
+				<li><a href="#" onclick="loadNpcTool()">NPC</a></li>
+				<li><a href="#" onclick="loadMapTool(map)">Map</a></li>
+			</ul>
+		</nav>
+	</div>
+</div>
+
+<div class="page-content">
+	<div class="site-width">
+		<div class="tool_info">
+			<h1>Tool Title</h1>
+			<p>This is a summary of whatever tool is supposed to be loaded below.</p>
+		</div>
+		
+		<div id="output-visual">
+			<h2>Visual representation</h2>
+		</div>
+		<div id="output-json">
+			<h2>JSON Preview</h2>
+<pre>
+{"menu": {
+  "id": "file",
+  "value": "File",
+  "popup": {
+    "menuitem": [
+      {"value": "New", "onclick": "CreateNewDoc()"},
+      {"value": "Open", "onclick": "OpenDoc()"},
+      {"value": "Close", "onclick": "CloseDoc()"}
+    ]
+  }
+}}</pre>
+		</div>
+	</div>
+</div>
+
+<footer class="site-footer">
+	<div class="site-width">
+		<p>&copy; 2021 &middot; Created by NB Games</p>
+	</div>
+</footer>
+
+</body>
+
+</html>
