@@ -20,7 +20,7 @@ let editor = document.getElementById('editor');
 
 // ** MAP FUNCTIONALITY ** //
 
-// Create an empty map object
+// Prepare an empty map object
 let map = {
   name: '',
   size: 0,
@@ -54,17 +54,17 @@ function createMap(_mapName, _mapSize) {
   saveMap(map);
 }
 
-// Remove map add it to map
+// Remove the map
 function removeMap(){
-  // ta bort från localstorage
+  // remove data from local storage
   localStorage.removeItem('mapJson');
-  // sätt lokala map arrayen till tom igen
+  // set the map array to empty again
   map = {
     name: '',
     size: 0,
     tiles: []
   };
-  // ta bort html som visar karta/editor om den finns
+  // remove html showing map/edit if it exists
   outputVisual.innerHTML = '';
   outputJson.innerHTML = '';
   showEditor(false);
