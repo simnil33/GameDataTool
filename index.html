@@ -1,65 +1,55 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GameDataTool &middot; Home</title>
 	<link rel=stylesheet type="text/css" href="css/style.css">
-	<script type="text/javascript" src="js/main.js"></script>
-	<script type="text/javascript" src="js/mapTool.js"></script>
-	<script type="text/javascript" src="js/itemTool.js"></script>
-	<script type="text/javascript" src="js/npcTool.js"></script>
-	<script type="text/javascript" src="js/questTool.js"></script>
-	<script type="text/javascript" src="js/export.js"></script>
 </head>
-
 <body>
-
-<div class="site-header">
-	<div class="site-width">
-		<p class="logo">RPG Tools</p>
-		<nav class="nav-primary">
-			<ul>
-				<li><a href="#" onclick="loadAbout()">About</a></li>
-				<li><a href="#" onclick="loadItemTool()">Items</a></li>
-				<li><a href="#" onclick="loadNpcTool()">NPC</a></li>
-				<li><a href="#" onclick="loadMapTool(map)">Map</a></li>
-			</ul>
-		</nav>
-	</div>
-</div>
-
-<div class="page-content">
-	<div class="site-width">
-		<div class="tool_info">
-			<h1>Tool Title</h1>
-			<p>This is a summary of whatever tool is supposed to be loaded below.</p>
-		</div>
-		
-		<div id="output-visual">
-			<h2>Visual representation</h2>
-		</div>
-		<div id="output-json">
-			<h2>JSON Preview</h2>
-<pre>
-{"menu": {
-  "id": "file",
-  "value": "File",
-  "popup": {
-    "menuitem": [
-      {"value": "New", "onclick": "CreateNewDoc()"},
-      {"value": "Open", "onclick": "OpenDoc()"},
-      {"value": "Close", "onclick": "CloseDoc()"}
-    ]
-  }
-}}</pre>
+	<div class="site-header">
+		<div class="site-width">
+			<p class="logo">GameDataTool</p>
+			<nav class="nav-primary">
+				<ul>
+					<li><a href="index.html">Home</a></li>
+					<li><a href="about.html">About</a></li>
+					<li><a href="tools/item-tool.html">Items</a></li>
+					<li><a href="tools/npc-tool.html">NPC</a></li>
+					<li><a href="tools/map-tool.html">Map</a></li>
+					<li><a href="tools/quest-tool.html">Quest</a></li>
+				</ul>
+			</nav>
 		</div>
 	</div>
-</div>
 
-<footer class="site-footer">
-	<div class="site-width">
-		<p>&copy; 2021 &middot; Created by NB Games</p>
+	<div class="page-content">
+		<div class="site-width">
+			<div class="tool_info">
+				<h1>Welcome to GameDataTools</h1>
+				<p>This is a cool tool for you fool(s).</p>
+			</div>
+			
+			<div id="content-left">
+				<h2>content left</h2>
+				<p>this is hjabsjhbas</p>
+			</div>
+			
+			<div id="content-right">
+				<h2>content right</h2>
+				<p>jhadjhabshjdkb</p>
+			</div>
+
+		</div>
 	</div>
-</footer>
 
+	<footer class="site-footer">
+		<div class="site-width">
+			<p>&copy; 2021 &middot; Created by NB Games</p>
+		</div>
+	</footer>
+
+	<script type="text/javascript" src="js/main.js"></script>
 </body>
-
 </html>

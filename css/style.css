@@ -29,6 +29,7 @@ body {
 .logo {
 	font-size: 2em;
 	font-weight: bold;
+	margin-bottom: 20px;
 }
 
 h1 {
@@ -84,7 +85,7 @@ nav > ul > li {
 	margin-bottom: 2em;
 }
 
-#output-json > pre {
+#content-json > pre {
 	background-color: #dddddd;
 	padding: 1.25em;
 	border-radius: .25em;

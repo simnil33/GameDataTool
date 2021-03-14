@@ -51,13 +51,19 @@ let map = {
 }
 */
 
+
+
 // When the page is loaded - generate a grid, then log and display it
+window.onload = loadMapTool;
+
 function loadMapTool() {
   map.tiles = generateGrid(3);
   console.log(map);
 
-  let pageContent = document.getElementById('output-visual');
-  displayMap(pageContent, map);
+  let outputVisual = document.getElementById('output-map');
+  let outputJson = document.getElementById('output-json');
+  displayMap(outputVisual, map);
+  displayJson(outputJson, map);
 }
 
 // Create empty map object
@@ -96,27 +102,21 @@ function generateGrid(_mapSize) {
 
 // Output the map as HTML inside the given element
 function displayMap(_element, _map) {
-  let mapDiv = document.createElement('div');
-  mapDiv.id = 'mapDisplay';
-  mapDiv.style.width = '960px';
-  mapDiv.style.display = 'inline-block';
-
   _map.tiles.forEach(tile => {
       let tileDiv = document.createElement('div');
-      tileDiv.classList.add('grid');
       tileDiv.id = tile.id;
       let p = document.createElement('p');
-      let text = document.createTextNode('ID: ${tile.id} \n Row: ${tile.pos.row} \n Col: ${tile.pos.col}');
+      let text = document.createTextNode(`ID: ${tile.id} \n Row: ${tile.pos.row} \n Col: ${tile.pos.col}`);
       p.append(text);
       tileDiv.append(p);
-      mapDiv.append(tileDiv);
+      _element.append(tileDiv);
   });
-
-  _element.append(mapDiv);
 }
 
+
 function displayJson(_element, _map) {
-//<div id="mapOutput" style="width:320px;display:inline-block;margin-left:50px;"></div>
+  let jsonStr = document.createTextNode(JSON.stringify(_map, true, 3));
+  _element.append(jsonStr);
 }
 
 // Generate a random grid and add it to map
