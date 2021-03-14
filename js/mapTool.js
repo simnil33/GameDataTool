@@ -64,8 +64,8 @@ function createMap(_mapName, _mapSize) {
   map.name = _mapName;
   map.size = _mapSize;
   map.tiles = generateGrid(_mapSize);
-  showMap(map)
   saveMap(map);
+  showMap(map);
 }
 
 
@@ -155,6 +155,7 @@ function displayMap(_element, _map) {
       let text = document.createTextNode(`ID: ${tile.id} \n Row: ${tile.pos.row} \n Col: ${tile.pos.col}`);
       p.append(text);
       tileDiv.append(p);
+      _element.innerHTML = '';
       _element.append(tileDiv);
   });
 }
@@ -162,6 +163,7 @@ function displayMap(_element, _map) {
 // Output the Map object as JSON in the given element
 function displayJson(_element, _map) {
   let jsonStr = document.createTextNode(JSON.stringify(_map, true, 3));
+  _element.innerHTML = '';
   _element.append(jsonStr);
 }
 
@@ -170,4 +172,4 @@ function displayJson(_element, _map) {
 
 // CREATE NEW MAP
 
-// EDIT EXISTING MAP
+// EDIT EXISTING MAPs
