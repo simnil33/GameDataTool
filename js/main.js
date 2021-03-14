@@ -1,8 +1,7 @@
-// do stuff when page is loaded
+// shared functions for all tools go here
 
-//window.onload = loadAbout();
+// save data
 
-function loadAbout(){
-};
+// load data
 
 // other main stuff

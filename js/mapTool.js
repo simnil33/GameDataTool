@@ -1,78 +1,78 @@
-/*
+/* 
+  Flöde
+   1. Användaren kommer till verktyget
+   2. Kolla om det finns sparad data i localStorage
+   3. Ladda data / skapa en ny tom Map
+   4. Ladda editor och låt användare fylla i uppgifter
+   4.5 Användaren klickar på en knapp
+   5. Generera efter användarens inställningar och visa output
+*/
 
-Skapa en karta med angiven storlek
-0 - en tom fil
-1 - skapa en array att hålla information i
-2 - fyll arrayen med rutor/tiles/rum (id, pos)
-3 - ge varje rum ingångar/utgångar (paths)
-4 - kolla om rummet är på kanten
-100 - klar - en json-fil med en karta och informaton om rum på kartan
+/* Exempel på localstorage
 
-Skapa en karta med slumpad storlek
-0 - slumpa fram en integer storlek
-1 - kör ovanstående funktion med den slumpade storleken
-100 - klar
+localStorage.setItem("lastname", "Smith");
 
-Radera den lagrade kartan
-0 - sätt array til []
-1 - sätt innerHTML till ''
-100 - klar
+document.getElementById("result").innerHTML = localStorage.getItem("lastname"); 
 
-Visa saker för användaren
-0 - skapa en 
-100 - 
-
-Spellogik vi inte ska röra i denna fil, men tänkt på
-- sätta en startposition, målrum?.
-- röra någon typ av spelare mellan rummen.
-- placera items, npc, quests på kartan
-- kontrollera om en rutan isEdge åt en riktning
 
 */
 
 /*
-// Exempel på färdig JSON
 
-Map.json är en json med speldata om kartan, den kan vara del av en större gameData.json eller fristående.
+Att göra EDITOR
+ Ge användaren knappar att skapa grid med
+*/
 
-let map = {
-  mapSize: 3,
-  tiles : [
-    {
-      id: 0,
-      pos: {row: 0, col: 0},
-      paths: {north: false, east: false, south: false, west: false}
-    },
-    {
-      id: 1,
-      ...
-    }
-  ]
-}
+/*
+Hålla koll på map
+ - let map (den aktiva kartan man jobbar med)
+ - func createMap
+ - func deletemap
+ - func loadMap
+ - func saveMap
 */
 
 
+
+// ** LAUNCH TOOL ** //
 
 // When the page is loaded - generate a grid, then log and display it
-window.onload = loadMapTool;
+window.onload = initMapTool;
 
-function loadMapTool() {
-  map.tiles = generateGrid(3);
-  console.log(map);
 
-  let outputVisual = document.getElementById('output-map');
-  let outputJson = document.getElementById('output-json');
+// Elements
+let outputVisual = document.getElementById('output-map');
+let outputJson = document.getElementById('output-json');
+
+function initMapTool() {
+
+
+}
+
+
+// ** MAP FUNCTIONALITY ** // 
+
+/*
+let map = {
+  mapName: '',
+  mapSize: 0,
+  tiles: []
+};
+*/
+
+// Create a new map with given name and size
+function createMap(_mapName, _mapSize) {
+  let map = {
+    mapName: _mapName,
+    mapSize: _mapSize,
+    tiles: []
+  };
+  map.tiles = generateGrid(_mapSize);
   displayMap(outputVisual, map);
   displayJson(outputJson, map);
 }
 
-// Create empty map object
-let map = {
-  mapSize: 0,
-  tiles: []
-};
-
-// Generate a grid of a given size
+// Generate a tile grid of a given size
 function generateGrid(_mapSize) {
 
   let tiles = [];
@@ -100,6 +100,25 @@ function generateGrid(_mapSize) {
 };
 
 
+
+// Generate a random grid and add it to map
+function generateRandomGrid(_max){
+  let size = Math.floor(Math.random() * _max) + 1;
+  generateGrid(size)
+};
+
+// Remove grid and add it to map
+function removeMap(){
+  map = {
+    mapName: '',
+    mapSize: 0,
+    tiles: []
+  };
+};
+
+
+// ** VISUALS ** //
+
 // Output the map as HTML inside the given element
 function displayMap(_element, _map) {
   _map.tiles.forEach(tile => {
@@ -113,18 +132,11 @@ function displayMap(_element, _map) {
   });
 }
 
-
+// Output the Map object as JSON in the given element
 function displayJson(_element, _map) {
   let jsonStr = document.createTextNode(JSON.stringify(_map, true, 3));
   _element.append(jsonStr);
 }
 
-// Generate a random grid and add it to map
-function generateRandomGrid(_max){
-  let size = Math.floor(Math.random() * _max) + 1;
-  generateGrid(size)
-};
 
-// Remove grid and add it to map
-function removeGrid(){
-};
+// ** USER INPUT ** //
