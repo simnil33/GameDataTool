@@ -1,0 +1,62 @@
+<html>
+
+<head>
+	<link rel=stylesheet type="text/css" href="css/style.css">
+	
+</head>
+
+<body>
+
+<div class="site-header">
+	<div class="site-width">
+		<p class="logo">GameDataTool</p>
+		<nav class="nav-primary">
+			<ul>
+				<li><a href="/about.html">About</a></li>
+				<li><a href="/tools/item-tool.html">Items</a></li>
+				<li><a href="/tools/npc-tool.html">NPC</a></li>
+				<li><a href="/tools/map-tool.html">Map</a></li>
+			</ul>
+		</nav>
+	</div>
+</div>
+
+<div class="page-content">
+	<div class="site-width">
+		<div class="tool_info">
+			<h1>MapTool</h1>
+			<p>This is a summary of whatever tool is supposed to be loaded below.</p>
+		</div>
+		
+		<div id="output-visual">
+			<h2>Visual representation</h2>
+		</div>
+		<div id="output-json">
+			<h2>JSON Preview</h2>
+<pre>
+{"menu": {
+  "id": "file",
+  "value": "File",
+  "popup": {
+    "menuitem": [
+      {"value": "New", "onclick": "CreateNewDoc()"},
+      {"value": "Open", "onclick": "OpenDoc()"},
+      {"value": "Close", "onclick": "CloseDoc()"}
+    ]
+  }
+}}</pre>
+		</div>
+	</div>
+</div>
+
+<footer class="site-footer">
+	<div class="site-width">
+		<p>&copy; 2021 &middot; Created by NB Games</p>
+	</div>
+</footer>
+
+<script type="text/javascript" src="../js/mapTool.js"></script>
+
+</body>
+
+</html>
