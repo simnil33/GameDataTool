@@ -151,6 +151,7 @@ function showEditor(_mapExists){
   let titleText;
   let form = document.createElement('form');
   let nameInput = document.createElement('input');
+  nameInput.name = 'name';
   let editorSubmit = document.createElement('input');
   nameInput.type = 'text';
   editorSubmit.type = 'submit';
@@ -181,9 +182,16 @@ function showEditor(_mapExists){
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    map.name = params.name.value;
+    console.log(e.target);
+
+    for(input of e.target.children) {
+
+      if(input.name !== '') {
+        map[input.name] = input.value;
+      }
+    };
     
-    saveMap();
+  saveMap();
 
   })
 };
