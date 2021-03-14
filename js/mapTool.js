@@ -8,18 +8,6 @@
    5. Generera efter användarens inställningar och visa output
 */
 
-/* Exempel på localstorage
-
-localStorage.setItem("lastname", "Smith");
-
-document.getElementById("result").innerHTML = localStorage.getItem("lastname"); 
-
-
-
-Att göra EDITOR
- Ge användaren knappar att skapa grid med
-*/
-
 // ** LAUNCH TOOL ** //
 
 // When the page is loaded - generate a grid, then log and display it
@@ -32,6 +20,7 @@ function initMapTool() {
 // Elements
 let outputVisual = document.getElementById('output-map');
 let outputJson = document.getElementById('output-json');
+let editor = document.getElementById('editor');
 
 // ** MAP FUNCTIONALITY ** //
 
@@ -57,6 +46,7 @@ function loadMap() {
 
 function saveMap() {
   localStorage.setItem('mapJson', JSON.stringify(map));
+  showMap(map);
 }
 
 // Create a new map with given name and size
@@ -64,14 +54,8 @@ function createMap(_mapName, _mapSize) {
   map.name = _mapName;
   map.size = _mapSize;
   map.tiles = generateGrid(_mapSize);
+  showEditor(true);
   saveMap(map);
-  showMap(map);
-}
-
-
-function showMap(_map){
-  displayMap(outputVisual, _map);
-  displayJson(outputJson, _map);
 }
 
 // Remove map add it to map
@@ -84,27 +68,11 @@ function removeMap(){
     size: 0,
     tiles: []
   };
-  // ta bort html som visar karta om den finns
+  // ta bort html som visar karta/editor om den finns
   outputVisual.innerHTML = '';
   outputJson.innerHTML = '';
+  showEditor(false);
 };
-
-function showEditor(_mapExists){
-  // Generera ett HTML formulär blalal...
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Generate a tile grid of a given size
 function generateGrid(_mapSize) {
@@ -133,21 +101,26 @@ function generateGrid(_mapSize) {
   return tiles
 };
 
-
-
 // Generate a random grid and add it to map
 function generateRandomGrid(_max){
   let size = Math.floor(Math.random() * _max) + 1;
   generateGrid(size)
 };
 
-
-
 // ** VISUALS ** //
 
+// Show the current map on page in various forms
+function showMap(_map){
+  displayMap(outputVisual, _map);
+  displayJson(outputJson, _map);
+}
 
 // Output the map as HTML inside the given element
 function displayMap(_element, _map) {
+  // Clear any existing content
+  _element.innerHTML = '';
+
+  // Loop trough the tiles of the _map and create a new div-element for each of them
   _map.tiles.forEach(tile => {
       let tileDiv = document.createElement('div');
       tileDiv.id = tile.id;
@@ -155,17 +128,70 @@ function displayMap(_element, _map) {
       let text = document.createTextNode(`ID: ${tile.id} \n Row: ${tile.pos.row} \n Col: ${tile.pos.col}`);
       p.append(text);
       tileDiv.append(p);
-      _element.innerHTML = '';
       _element.append(tileDiv);
   });
 }
 
 // Output the Map object as JSON in the given element
 function displayJson(_element, _map) {
-  let jsonStr = document.createTextNode(JSON.stringify(_map, true, 3));
+  // Clear any existing content
   _element.innerHTML = '';
+
+  // Create a new text node of the current map as JSON
+  let jsonStr = document.createTextNode(JSON.stringify(_map, true, 3));
+
+  // Append the text node to the given element
   _element.append(jsonStr);
 }
+
+function showEditor(_mapExists){
+  editor.innerHTML = '';
+
+  let title = document.createElement('h2');
+  let titleText;
+  let form = document.createElement('form');
+  let nameInput = document.createElement('input');
+  let editorSubmit = document.createElement('input');
+  nameInput.type = 'text';
+  editorSubmit.type = 'submit';
+
+  if (_mapExists){
+    // A map exists and is loaded, fields for editing
+    titleText = document.createTextNode('Edit Map');
+    nameInput.value = map.name;
+    editorSubmit.value = 'Update Map';
+    
+  } else {
+    // A map does not exist and needs to be generated
+    titleText = document.createTextNode('Create a New Map');
+    nameInput.placeholder = 'The name of your map';
+    editorSubmit.value = 'Create Map';
+  }
+
+  form.append(nameInput);
+  form.append(editorSubmit);
+
+  title.append(titleText);
+  editor.append(title);
+
+  editor.append(form);
+
+
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    map.name = params.name.value;
+    
+    saveMap();
+
+  })
+};
+
+// 
+
+
+
 
 
 // ** USER INPUT ** //
@@ -173,3 +199,35 @@ function displayJson(_element, _map) {
 // CREATE NEW MAP
 
 // EDIT EXISTING MAPs
+
+/*
+user adding custom attribues in editor
+formAttributes{
+  nameInput{
+    fieldType: text
+    placeholder: kagjhsvd
+    valueType: bool/int/str 
+  }
+
+  editorSubmit:
+}
+
+forEach attribute in formAttribues{
+  jhbasdjhbasd
+}
+
+//---
+
+data {
+  name: newname;
+}
+
+function updateMap(_data){
+  // matcha och ersätt data från _data till fält i map
+  finns name i map? ja/nej
+  om ja, ersätt värdet med newname
+  om nej, appenda name: newname till map 
+  // 
+}
+
+*/
