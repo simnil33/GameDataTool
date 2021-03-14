@@ -15,62 +15,96 @@ localStorage.setItem("lastname", "Smith");
 document.getElementById("result").innerHTML = localStorage.getItem("lastname"); 
 
 
-*/
-
-/*
 
 Att göra EDITOR
  Ge användaren knappar att skapa grid med
 */
-
-/*
-Hålla koll på map
- - let map (den aktiva kartan man jobbar med)
- - func createMap
- - func deletemap
- - func loadMap
- - func saveMap
-*/
-
-
 
 // ** LAUNCH TOOL ** //
 
 // When the page is loaded - generate a grid, then log and display it
 window.onload = initMapTool;
 
+function initMapTool() {
+  loadMap();
+}
 
 // Elements
 let outputVisual = document.getElementById('output-map');
 let outputJson = document.getElementById('output-json');
 
-function initMapTool() {
+// ** MAP FUNCTIONALITY ** //
 
-
-}
-
-
-// ** MAP FUNCTIONALITY ** // 
-
-/*
+// Create an empty map object
 let map = {
-  mapName: '',
-  mapSize: 0,
+  name: '',
+  size: 0,
   tiles: []
 };
-*/
+
+// Check if there's a stored map
+function loadMap() {
+  if(localStorage.getItem('mapJson')) {
+    console.log('Map found!');
+    map = JSON.parse(localStorage.getItem('mapJson'));
+    showMap(map);
+    showEditor(true);
+  } else {
+    console.log('No map found');
+    showEditor(false);
+  }
+}
+
+function saveMap() {
+  localStorage.setItem('mapJson', JSON.stringify(map));
+}
 
 // Create a new map with given name and size
 function createMap(_mapName, _mapSize) {
-  let map = {
-    mapName: _mapName,
-    mapSize: _mapSize,
+  map.name = _mapName;
+  map.size = _mapSize;
+  map.tiles = generateGrid(_mapSize);
+  showMap(map)
+  saveMap(map);
+}
+
+
+function showMap(_map){
+  displayMap(outputVisual, _map);
+  displayJson(outputJson, _map);
+}
+
+// Remove map add it to map
+function removeMap(){
+  // ta bort från localstorage
+  localStorage.removeItem('mapJson');
+  // sätt lokala map arrayen till tom igen
+  map = {
+    name: '',
+    size: 0,
     tiles: []
   };
-  map.tiles = generateGrid(_mapSize);
-  displayMap(outputVisual, map);
-  displayJson(outputJson, map);
-}
+  // ta bort html som visar karta om den finns
+  outputVisual.innerHTML = '';
+  outputJson.innerHTML = '';
+};
+
+function showEditor(_mapExists){
+  // Generera ett HTML formulär blalal...
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Generate a tile grid of a given size
 function generateGrid(_mapSize) {
@@ -107,17 +141,10 @@ function generateRandomGrid(_max){
   generateGrid(size)
 };
 
-// Remove grid and add it to map
-function removeMap(){
-  map = {
-    mapName: '',
-    mapSize: 0,
-    tiles: []
-  };
-};
 
 
 // ** VISUALS ** //
+
 
 // Output the map as HTML inside the given element
 function displayMap(_element, _map) {
@@ -140,3 +167,7 @@ function displayJson(_element, _map) {
 
 
 // ** USER INPUT ** //
+
+// CREATE NEW MAP
+
+// EDIT EXISTING MAP
