@@ -22,6 +22,25 @@ let item = {};
 
 // ** Singular item **//
 
+// temp data for item creation
+let boxArgs = {
+  name: 'box',
+  size: 3,
+  colour: 'red',
+  weight: 5
+}
+
+let treeArgs = {
+  name: 'tree',
+  size: 'big',
+  species: 'oak',
+  weight: 500
+}
+
+// call for new item to be created
+createItem(boxArgs, items);
+createItem(treeArgs, items);
+
 // Check if there is a stored item
 function loadItem() {
     if(localStorage.getItem('itemJson')) {
@@ -35,30 +54,12 @@ function loadItem() {
     }
   }
 
-// temp data for item creation
-let boxArgs = {
-    name: 'box',
-    size: 3,
-    colour: 'red',
-    weight: 5
- }
-
-let treeArgs = {
-    name: 'tree',
-    size: 'big',
-    species: 'oak',
-    weight: 500
- }
-
-// call for new item to be created
-createItem(boxArgs, items);
-createItem(treeArgs, items);
-
 // create a new item and save it
 function createItem(_args, _target){
-  item = createNew(_args, _target);
-  saveItem(item);
-  saveItems(items);
+  _args['id'] = _target.length;
+  _target.push(_args);
+  saveItem(_args);
+  saveItems(_target);
 }
 
 // save an item to local storage
@@ -78,6 +79,22 @@ function removeItem(){
     outputSingleJson.innerHTML = '';
     showEditor(false);
   };
+
+// update an item by pushing it to items
+function updateItem(_item){
+    // check if an item with same id exist in items
+  if (items.find( ({ id }) => id === _item.id )){
+    // if yes, replace that id with updated item
+    let oldItem = items.find( ({ id }) => id === _item.id );
+    let newItem = _item;
+    items[oldItem.id] = newItem;
+    showItems(items);
+    saveItems(items);
+  } else {
+    // if no, create a new item and add it to items
+    createItem(_item, items);
+  }
+}
 
 
 // ** All items **//
@@ -238,9 +255,7 @@ function displayAllJson(_element, _items) {
           item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
         }
       };
-      
-    saveItem();
-    saveItems();
-  
+    saveItem(item);
+    updateItem(item)
     })
   };
