@@ -47,10 +47,8 @@ function loadItem() {
       console.log('Item found!');
       item = JSON.parse(localStorage.getItem('itemJson'));
       showItem(item);
-      showEditor(true);
     } else {
       console.log('No items found');
-      showEditor(false);
     }
   }
 
@@ -77,25 +75,22 @@ function removeItem(){
     // remove html showing items/editor if it exists
     outputSingle.innerHTML = '';
     outputSingleJson.innerHTML = '';
-    showEditor(false);
   };
 
 // update an item by pushing it to items
-function updateItem(_item){
+function updateItems(_item){
     // check if an item with same id exist in items
   if (items.find( ({ id }) => id === _item.id )){
     // if yes, replace that id with updated item
     let oldItem = items.find( ({ id }) => id === _item.id );
     let newItem = _item;
     items[oldItem.id] = newItem;
-    showItems(items);
     saveItems(items);
   } else {
     // if no, create a new item and add it to items
     createItem(_item, items);
   }
 }
-
 
 // ** All items **//
 
@@ -105,10 +100,8 @@ function loadItems() {
       console.log('Items found!');
       items = JSON.parse(localStorage.getItem('itemsJson'));
       showItems(items);
-      showEditor(true);
     } else {
       console.log('No items found');
-      showEditor(false);
     }
   }
 
@@ -127,7 +120,6 @@ function removeItems(){
     // remove html showing items/editor if it exists
     outputAll.innerHTML = '';
     outputAllJson.innerHTML = '';
-    showEditor(false);
   };
 
 // ** VISUALS ** //
@@ -139,6 +131,7 @@ function removeItems(){
 function showItem(_item){
     displaySingle(outputSingle, _item);
     displaySingleJson(outputSingleJson, _item);
+    showEditor(_item);
   }
 
 // Output an item as HTML inside the given element
@@ -206,56 +199,107 @@ function displayAllJson(_element, _items) {
   }
 
 
-// ** Item editor ** //
+// ** USER INPUT ** //
+
+// ** Item creator form ** //
+
+/*
+
+function showCreator(){
+  editor.innerHTML = '';
+
+  let title = document.createElement('h2');
+  let titleText;
+  let form = document.createElement('form');
+  let nameInput = document.createElement('input');
+  nameInput.name = 'name';
+  let sizeInput = document.createElement('input');
+  sizeInput.name = 'size';
+  let editorSubmit = document.createElement('input');
+  nameInput.type = 'text';
+  sizeInput.type = 'number';
+  editorSubmit.type = 'submit';
+
+  titleText = document.createTextNode('Create a New Item');
+  nameInput.placeholder = 'The name of your item';
+  editorSubmit.value = 'Create Item';
+
+  form.append(nameInput);
+  form.append(sizeInput);
+  form.append(editorSubmit);
+
+  title.append(titleText);
+  editor.append(title);
+
+  editor.append(form);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    //build item from form fields
+    for(input of e.target.children) {
+
+      if(input.name !== '') {
+        item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
+      }
+    };
+  saveItem(item);
+  })
+};
+
+*/
+
+// ** Item editor form ** //
 
 // show editor for user input
-  function showEditor(_itemsExist){
+  function showEditor(_item){
+    // clear the editor of previous data
     editor.innerHTML = '';
-  
+
+    // prepare html elements around the editor
     let title = document.createElement('h2');
-    let titleText;
     let form = document.createElement('form');
-    let nameInput = document.createElement('input');
-    nameInput.name = 'name';
-    let sizeInput = document.createElement('input');
-    sizeInput.name = 'size';
+    let titleText = document.createTextNode('Edit Item');
     let editorSubmit = document.createElement('input');
-    nameInput.type = 'text';
-    sizeInput.type = 'number';
-    editorSubmit.type = 'submit';
   
-    if (_itemsExist){
-      // An item exists and is loaded, fields for editing
-      titleText = document.createTextNode('Edit Item');
-      nameInput.value = item.name;
-      sizeInput.value = item.size;
-      editorSubmit.value = 'Update Item';
-      
-    } else {
-      // An item does not exist and needs to be generated
-      titleText = document.createTextNode('Create a New Item');
-      nameInput.placeholder = 'The name of your item';
-      editorSubmit.value = 'Create Item';
-    }
-  
-    form.append(nameInput);
-    form.append(sizeInput);
+    // create form elements for each kv pair in object
+    Object.entries(_item).forEach(entry => {
+      const [key, value] = entry;
+      let theInput = document.createElement('input');
+      theInput.name = key;
+      theInput.value = value;
+      if (typeof value === 'string'|| value instanceof String){
+        theInput.type = 'text';
+      } else if (typeof value === 'number') {
+        theInput.type = 'number';
+      } else if (typeof value === 'boolean'){
+        theInput.type = 'checkbox';
+      }
+      form.append(theInput);
+    });
+
+    // append html elements around the editor
     form.append(editorSubmit);
-  
     title.append(titleText);
     editor.append(title);
-  
     editor.append(form);
+
+    // submit button will always be this
+    editorSubmit.type = 'submit';
+    editorSubmit.value = 'Update Item';
   
+    // listen for form submit event
     form.addEventListener('submit', (e) => {
+      // dont post
       e.preventDefault();
+      // build an object from the form fields
       for(input of e.target.children) {
-  
         if(input.name !== '') {
           item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
         }
       };
-    saveItem(item);
-    updateItem(item)
+    // save new object as single item, update items array with new object 
+    saveItem(item)
+    updateItems(item)
     })
   };
+
