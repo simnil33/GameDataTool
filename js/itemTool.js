@@ -1,3 +1,5 @@
+//to do - a way to select which item to edit, something easier than typing in ID.
+
 // ** LAUNCH TOOL ** //
 // When the page is loaded - generate a grid, then log and display it
 window.onload = initItemTool;
@@ -5,6 +7,7 @@ window.onload = initItemTool;
 function initItemTool() {
   loadItem();
   loadItems();
+  showCreator();
 }
 
 // Elements
@@ -22,42 +25,22 @@ let item = {};
 
 // ** Singular item **//
 
-// temp data for item creation
-let boxArgs = {
-  name: 'box',
-  size: 3,
-  colour: 'red',
-  weight: 5
-}
-
-let treeArgs = {
-  name: 'tree',
-  size: 'big',
-  species: 'oak',
-  weight: 500
-}
-
-// call for new item to be created
-createItem(boxArgs, items);
-createItem(treeArgs, items);
-
 // Check if there is a stored item
 function loadItem() {
     if(localStorage.getItem('itemJson')) {
-      console.log('Item found!');
       item = JSON.parse(localStorage.getItem('itemJson'));
       showItem(item);
-    } else {
-      console.log('No items found');
     }
   }
 
 // create a new item and save it
 function createItem(_args, _target){
+  //item = {};
   _args['id'] = _target.length;
   _target.push(_args);
   saveItem(_args);
   saveItems(_target);
+  loadItem();
 }
 
 // save an item to local storage
@@ -85,6 +68,7 @@ function updateItems(_item){
     let oldItem = items.find( ({ id }) => id === _item.id );
     let newItem = _item;
     items[oldItem.id] = newItem;
+    saveItem(newItem);
     saveItems(items);
   } else {
     // if no, create a new item and add it to items
@@ -97,11 +81,8 @@ function updateItems(_item){
 // Check if there are stored items
 function loadItems() {
     if(localStorage.getItem('itemsJson')) {
-      console.log('Items found!');
       items = JSON.parse(localStorage.getItem('itemsJson'));
       showItems(items);
-    } else {
-      console.log('No items found');
     }
   }
 
@@ -203,50 +184,64 @@ function displayAllJson(_element, _items) {
 
 // ** Item creator form ** //
 
-/*
-
 function showCreator(){
-  editor.innerHTML = '';
+    // clear the creator of previous data
+    creator.innerHTML = '';
 
-  let title = document.createElement('h2');
-  let titleText;
-  let form = document.createElement('form');
-  let nameInput = document.createElement('input');
-  nameInput.name = 'name';
-  let sizeInput = document.createElement('input');
-  sizeInput.name = 'size';
-  let editorSubmit = document.createElement('input');
-  nameInput.type = 'text';
-  sizeInput.type = 'number';
-  editorSubmit.type = 'submit';
-
-  titleText = document.createTextNode('Create a New Item');
-  nameInput.placeholder = 'The name of your item';
-  editorSubmit.value = 'Create Item';
-
-  form.append(nameInput);
-  form.append(sizeInput);
-  form.append(editorSubmit);
-
-  title.append(titleText);
-  editor.append(title);
-
-  editor.append(form);
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    //build item from form fields
-    for(input of e.target.children) {
-
-      if(input.name !== '') {
-        item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
+    // prepare html elements around the creator
+    let title = document.createElement('h2');
+    let creatorForm = document.createElement('form');
+    let titleText = document.createTextNode('Create Item');
+    let creatorSubmit = document.createElement('input');
+  
+    // default fields for new objects
+    let defaultItem = {
+      name: 'small red box',
+      size: 1,
+      colour: 'red'
+    }
+    
+    // create form elements for each kv pair in object
+    Object.entries(defaultItem).forEach(entry => {
+      const [key, value] = entry;
+      let theInput = document.createElement('input');
+      theInput.name = key;
+      theInput.value = value;
+      if (typeof value === 'string'|| value instanceof String){
+        theInput.type = 'text';
+      } else if (typeof value === 'number') {
+        theInput.type = 'number';
+      } else if (typeof value === 'boolean'){
+        theInput.type = 'checkbox';
       }
-    };
-  saveItem(item);
-  })
-};
+      creatorForm.append(theInput);
+    });
 
-*/
+    // append html elements around the creator
+    creatorForm.append(creatorSubmit);
+    title.append(titleText);
+    creator.append(title);
+    creator.append(creatorForm);
+
+    // submit button will always be this
+    creatorSubmit.type = 'submit';
+    creatorSubmit.value = 'Create Item';
+  
+    // listen for form submit event
+    creatorForm.addEventListener('submit', (e) => {
+      // dont post
+      e.preventDefault();
+      // build an object from the form fields
+      for(input of e.target.children) {
+        if(input.name !== '') {
+          item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
+        }
+      };
+    // create new item with object 
+    createItem(item, items);
+    });
+  };
+
 
 // ** Item editor form ** //
 
@@ -257,7 +252,7 @@ function showCreator(){
 
     // prepare html elements around the editor
     let title = document.createElement('h2');
-    let form = document.createElement('form');
+    let editorForm = document.createElement('form');
     let titleText = document.createTextNode('Edit Item');
     let editorSubmit = document.createElement('input');
   
@@ -274,21 +269,21 @@ function showCreator(){
       } else if (typeof value === 'boolean'){
         theInput.type = 'checkbox';
       }
-      form.append(theInput);
+      editorForm.append(theInput);
     });
 
     // append html elements around the editor
-    form.append(editorSubmit);
+    editorForm.append(editorSubmit);
     title.append(titleText);
     editor.append(title);
-    editor.append(form);
+    editor.append(editorForm);
 
     // submit button will always be this
     editorSubmit.type = 'submit';
     editorSubmit.value = 'Update Item';
   
     // listen for form submit event
-    form.addEventListener('submit', (e) => {
+    editorForm.addEventListener('submit', (e) => {
       // dont post
       e.preventDefault();
       // build an object from the form fields
@@ -297,9 +292,8 @@ function showCreator(){
           item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
         }
       };
-    // save new object as single item, update items array with new object 
-    saveItem(item)
+    // update items array with new object 
     updateItems(item)
-    })
+    });
   };
 
