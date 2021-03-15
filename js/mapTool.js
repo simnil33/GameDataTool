@@ -40,6 +40,7 @@ function loadMap() {
   }
 }
 
+// save map to local storage and update page
 function saveMap() {
   localStorage.setItem('mapJson', JSON.stringify(map));
   showMap(map);
@@ -140,6 +141,7 @@ function displayJson(_element, _map) {
   _element.append(jsonStr);
 }
 
+  // show editor for user input
 function showEditor(_mapExists){
   editor.innerHTML = '';
 
