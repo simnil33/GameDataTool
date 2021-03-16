@@ -1,13 +1,5 @@
 //to do - a way to select which item to edit, something easier than typing in ID.
 
-// ** LAUNCH TOOL ** //
-// When the page is loaded - generate a grid, then log and display it
-window.onload = initItemTool;
-
-function initItemTool() {
-  loadFromStorage();
-}
-
 // Elements
 let outputAll = document.getElementById('output-item-all');
 let outputSingle = document.getElementById('output-item-single');
@@ -16,78 +8,24 @@ let outputSingleJson = document.getElementById('output-json-single');
 let editor = document.getElementById('editor');
 let creator = document.getElementById('creator');
 
+// empty containers
+let item = {};
+let items = [];
+
+// local storage names
+let storageSingle = 'itemJson';
+let storageAll = 'itemsJson';
+
+// ** LAUNCH TOOL ** //
+
+// When the page is loaded - get stuff out of storage
+window.onload = loadFromStorage(item, items);
+
 // ** ITEM FUNCTIONALITY ** //
 
-// Prepare empty item arrays
-let items = [];
-let item = {};
+// Functionality is shared with other tools in main.js
 
-// Check if there are any items in local storage and update display
-function loadFromStorage() {
-    if(localStorage.getItem('itemJson')) {
-      item = JSON.parse(localStorage.getItem('itemJson'));
-    }
-    if(localStorage.getItem('itemsJson')) {
-      items = JSON.parse(localStorage.getItem('itemsJson'));
-    }
-    updateDisplay(item, items)
-  }
-
-// save to local storage and reload the data
-  function saveToStorage(_item, _items) {
-    localStorage.setItem('itemJson', JSON.stringify(_item));
-    localStorage.setItem('itemsJson', JSON.stringify(_items));
-    loadFromStorage()
-  }
-
-// create a new item and save it
-function createItem(_item, _items){
-    _item['id'] = _items.length;
-    _items.push(_item);
-    saveToStorage(_item, _items);
-  }
-
-// update an item by pushing it to items
-function updateItems(_item, _items){
-  // check if an item with same id exist in items array
-  if (_items.find( ({ id }) => id === _item.id )){
-    // if yes, replace that object with updated item object
-    let oldItem = _items.find( ({ id }) => id === _item.id );
-    _items[oldItem.id] = _item;
-    saveToStorage(_item, _items);
-  } else {
-    // if no, we want to create the item instead
-    createItem(_item, _items);
-  }
-}
-
-/*
-
-Not used right now, might be connected to a button or "remove this item"-button later.
-
-// Remove an item from local storage and reload
-function clearItem(){
-    // remove data from local storage
-    localStorage.removeItem('itemJson');
-    // set the items array to empty again
-    item = {};
-    // get the new situation from storage
-    loadFromStorage();
-};
-
-// Remove all items from local storage and reload
-function clearItems(){
-    // remove data from local storage
-    localStorage.removeItem('itemsJson');
-    // set the items array to empty again
-    items = [];
-    // get the new situation from storage
-    loadFromStorage();
-};
-
-*/
-
-// ** VISUALS ** //
+// ** ITEM VISUALS ** //
 
 // Shows items on page in various forms
 function updateDisplay(_item, _items){
@@ -105,9 +43,9 @@ function displaySingle(_item) {
 
   // Check the item data and create new elements for it
   let itemDiv = document.createElement('div');
-  itemDiv.id = item.id;
+  itemDiv.id = _item.id;
   let p = document.createElement('p');
-  let text = document.createTextNode(`ID: ${item.id} \n`);
+  let text = document.createTextNode(`ID: ${_item.id} \n`);
   p.append(text);
   itemDiv.append(p);
   outputSingle.append(itemDiv);
@@ -152,7 +90,7 @@ function displayAll(_items) {
 }
 
 
-// ** USER INPUT ** //
+// ** ITEM USER INPUT ** //
 
 // ** Item creator form ** //
 
@@ -210,7 +148,7 @@ function showCreator(_item, _items){
         }
       };
     // create new item with object 
-    createItem(_item, _items);
+    createNew(_item, _items);
     });
   };
 
@@ -265,6 +203,6 @@ function showCreator(_item, _items){
         }
       };
     // update items array with new object 
-    updateItems(_item, _items)
+    updateObject(_item, _items)
     });
   };
