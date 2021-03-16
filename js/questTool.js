@@ -1,4 +1,4 @@
-// loads the quest tool when button is clicked
+// loads the quest tool
 function loadQuestTool(){
 
 }
