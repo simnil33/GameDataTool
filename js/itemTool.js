@@ -5,9 +5,7 @@
 window.onload = initItemTool;
 
 function initItemTool() {
-  loadItem();
-  loadItems();
-  showCreator();
+  loadFromStorage();
 }
 
 // Elements
@@ -16,6 +14,7 @@ let outputSingle = document.getElementById('output-item-single');
 let outputAllJson = document.getElementById('output-json-all');
 let outputSingleJson = document.getElementById('output-json-single');
 let editor = document.getElementById('editor');
+let creator = document.getElementById('creator');
 
 // ** ITEM FUNCTIONALITY ** //
 
@@ -23,168 +22,141 @@ let editor = document.getElementById('editor');
 let items = [];
 let item = {};
 
-// ** Singular item **//
-
-// Check if there is a stored item
-function loadItem() {
+// Check if there are any items in local storage and update display
+function loadFromStorage() {
     if(localStorage.getItem('itemJson')) {
       item = JSON.parse(localStorage.getItem('itemJson'));
-      showItem(item);
     }
+    if(localStorage.getItem('itemsJson')) {
+      items = JSON.parse(localStorage.getItem('itemsJson'));
+    }
+    updateDisplay(item, items)
+  }
+
+// save to local storage and reload the data
+  function saveToStorage(_item, _items) {
+    localStorage.setItem('itemJson', JSON.stringify(_item));
+    localStorage.setItem('itemsJson', JSON.stringify(_items));
+    loadFromStorage()
   }
 
 // create a new item and save it
-function createItem(_args, _target){
-  //item = {};
-  _args['id'] = _target.length;
-  _target.push(_args);
-  saveItem(_args);
-  saveItems(_target);
-  loadItem();
-}
-
-// save an item to local storage
-  function saveItem(_item) {
-    localStorage.setItem('itemJson', JSON.stringify(_item));
-    showItem(_item);
+function createItem(_item, _items){
+    _item['id'] = _items.length;
+    _items.push(_item);
+    saveToStorage(_item, _items);
   }
 
-// Remove an item from local storage
-function removeItem(){
+// update an item by pushing it to items
+function updateItems(_item, _items){
+  // check if an item with same id exist in items array
+  if (_items.find( ({ id }) => id === _item.id )){
+    // if yes, replace that object with updated item object
+    let oldItem = _items.find( ({ id }) => id === _item.id );
+    _items[oldItem.id] = _item;
+    saveToStorage(_item, _items);
+  } else {
+    // if no, we want to create the item instead
+    createItem(_item, _items);
+  }
+}
+
+/*
+
+Not used right now, might be connected to a button or "remove this item"-button later.
+
+// Remove an item from local storage and reload
+function clearItem(){
     // remove data from local storage
     localStorage.removeItem('itemJson');
     // set the items array to empty again
     item = {};
-    // remove html showing items/editor if it exists
-    outputSingle.innerHTML = '';
-    outputSingleJson.innerHTML = '';
-  };
+    // get the new situation from storage
+    loadFromStorage();
+};
 
-// update an item by pushing it to items
-function updateItems(_item){
-    // check if an item with same id exist in items
-  if (items.find( ({ id }) => id === _item.id )){
-    // if yes, replace that id with updated item
-    let oldItem = items.find( ({ id }) => id === _item.id );
-    let newItem = _item;
-    items[oldItem.id] = newItem;
-    saveItem(newItem);
-    saveItems(items);
-  } else {
-    // if no, create a new item and add it to items
-    createItem(_item, items);
-  }
-}
-
-// ** All items **//
-
-// Check if there are stored items
-function loadItems() {
-    if(localStorage.getItem('itemsJson')) {
-      items = JSON.parse(localStorage.getItem('itemsJson'));
-      showItems(items);
-    }
-  }
-
-// save items to local storage and update page
-function saveItems(_items) {
-    localStorage.setItem('itemsJson', JSON.stringify(_items));
-    showItems(_items);
-  }
-
-// Remove items from local storage and update page
-function removeItems(){
+// Remove all items from local storage and reload
+function clearItems(){
     // remove data from local storage
     localStorage.removeItem('itemsJson');
     // set the items array to empty again
     items = [];
-    // remove html showing items/editor if it exists
-    outputAll.innerHTML = '';
-    outputAllJson.innerHTML = '';
-  };
+    // get the new situation from storage
+    loadFromStorage();
+};
+
+*/
 
 // ** VISUALS ** //
 
-// ** Singular item **//
-
-// Show an item on page in various forms
-
-function showItem(_item){
-    displaySingle(outputSingle, _item);
-    displaySingleJson(outputSingleJson, _item);
-    showEditor(_item);
-  }
+// Shows items on page in various forms
+function updateDisplay(_item, _items){
+  displaySingle(_item);
+  displayAll(_items);
+  showCreator(_item, _items);
+  showEditor(_item, _items);
+}
 
 // Output an item as HTML inside the given element
-function displaySingle(_element, _item) {
-    // Clear any existing content
-    _element.innerHTML = '';
-  
-    // Check the item data and create new elements for it
-    let itemDiv = document.createElement('div');
-    itemDiv.id = item.id;
-    let p = document.createElement('p');
-    let text = document.createTextNode(`ID: ${item.id} \n`);
-    p.append(text);
-    itemDiv.append(p);
-    _element.append(itemDiv);
-  }
+function displaySingle(_item) {
+    
+  // Clear any existing html content
+  outputSingle.innerHTML = '';
 
-// Output the Item objects as JSON in the given element
-function displaySingleJson(_element, _item) {
-    // Clear any existing content
-    _element.innerHTML = '';
-  
-    // Create a new text node of the current items as JSON
-    let jsonSingleStr = document.createTextNode(JSON.stringify(_item, true, 3));
-  
-    // Append the text node to the given element
-    _element.append(jsonSingleStr);
-  }
+  // Check the item data and create new elements for it
+  let itemDiv = document.createElement('div');
+  itemDiv.id = item.id;
+  let p = document.createElement('p');
+  let text = document.createTextNode(`ID: ${item.id} \n`);
+  p.append(text);
+  itemDiv.append(p);
+  outputSingle.append(itemDiv);
 
-// ** All items **//
+  // Clear any existing json content
+  outputSingleJson.innerHTML = '';
 
-// Show all items on page in various forms
-function showItems(_items){
-    displayAll(outputAll, _items);
-    displayAllJson(outputAllJson, _items);
-  }
+  // Create a new text node of the current items as JSON
+  let jsonSingleStr = document.createTextNode(JSON.stringify(_item, true, 3));
+
+  // Append the text node to the given element
+  outputSingleJson.append(jsonSingleStr);
+
+}
 
 // Output the items as HTML inside the given element
-function displayAll(_element, _items) {
-    // Clear any existing content
-    _element.innerHTML = '';
-  
-    // Loop trough the items of the _items and create a new div-element for each of them
-    _items.forEach(item => {
-        let itemDiv = document.createElement('div');
-        itemDiv.id = item.id;
-        let p = document.createElement('p');
-        let text = document.createTextNode(`ID: ${item.id} \n`);
-        p.append(text);
-        itemDiv.append(p);
-        _element.append(itemDiv);
-    });
-  }
+function displayAll(_items) {
 
-// Output the Item objects as JSON in the given element
-function displayAllJson(_element, _items) {
-    // Clear any existing content
-    _element.innerHTML = '';
-  
-    // Create a new text node of the current items as JSON
-    let jsonAllStr = document.createTextNode(JSON.stringify(_items, true, 3));
-  
-    // Append the text node to the given element
-    _element.append(jsonAllStr);
-  }
+  // Clear any existing html content
+  outputAll.innerHTML = '';
+
+  // Loop trough the items of the _items and create a new div-element for each of them
+  _items.forEach(item => {
+      let itemDiv = document.createElement('div');
+      itemDiv.id = item.id;
+      let p = document.createElement('p');
+      let text = document.createTextNode(`ID: ${item.id} \n`);
+      p.append(text);
+      itemDiv.append(p);
+      outputAll.append(itemDiv);
+  });
+
+  // Clear any existing json content
+  outputAllJson.innerHTML = '';
+
+  // Create a new text node of the current items as JSON
+  let jsonAllStr = document.createTextNode(JSON.stringify(_items, true, 3));
+
+  // Append the text node to the given element
+  outputAllJson.append(jsonAllStr);
+
+}
 
 
 // ** USER INPUT ** //
 
 // ** Item creator form ** //
 
-function showCreator(){
+function showCreator(_item, _items){
     // clear the creator of previous data
     creator.innerHTML = '';
 
@@ -234,11 +206,11 @@ function showCreator(){
       // build an object from the form fields
       for(input of e.target.children) {
         if(input.name !== '') {
-          item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
+          _item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
         }
       };
     // create new item with object 
-    createItem(item, items);
+    createItem(_item, _items);
     });
   };
 
@@ -246,7 +218,7 @@ function showCreator(){
 // ** Item editor form ** //
 
 // show editor for user input
-  function showEditor(_item){
+  function showEditor(_item, _items){
     // clear the editor of previous data
     editor.innerHTML = '';
 
@@ -289,11 +261,10 @@ function showCreator(){
       // build an object from the form fields
       for(input of e.target.children) {
         if(input.name !== '') {
-          item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
+          _item[input.name] = Number.isInteger(+input.value) ? +input.value : input.value;
         }
       };
     // update items array with new object 
-    updateItems(item)
+    updateItems(_item, _items)
     });
   };
-
