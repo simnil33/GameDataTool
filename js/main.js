@@ -67,3 +67,8 @@ function clearItems(){
 };
 
 */
+
+function clearLocalStorage(){
+  localStorage.clear();
+  location.reload();
+};
